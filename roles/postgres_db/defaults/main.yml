@@ -1,0 +1,3 @@
+dbname: myapp_production
+dbuser: bandanatech
+dbpassword: mysupersecretpassword

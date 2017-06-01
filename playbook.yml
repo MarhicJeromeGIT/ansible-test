@@ -1,0 +1,38 @@
+# ansible-playbook -i hosts.yml playbook.yml
+
+# Install required packages
+- hosts: all
+  become: yes
+
+  #tasks:
+  #  - name: ensure apt cache is up to date
+  #    apt: update_cache=yes
+  #  - name: ensure packages are installed
+  #    apt: name={{item}} state=latest
+  #    with_items:
+  #      - postgresql
+  #      - libpq-dev
+  #      - python-psycopg2
+
+# Setup Nginx, postgres and RVM
+- hosts: all
+  become: yes
+
+  roles:
+    - role: jdauphant.nginx
+      nginx_http_params: ["sendfile on", "access_log /var/log/nginx/access.log"]
+      nginx_configs:
+        upstream:
+          - upstream bar { server unix:/home/deploy/appname/shared/sockets/unicorn.sock fail_timeout=0; }
+      nginx_sites:
+        bar:
+          - listen 80
+          - server_name stocks.bandanatech.org
+          - root /home/deploy/appname/public
+    #- { role: rvm_io.ruby,
+    #    tags: ruby,
+    #    rvm1_rubies: ['ruby-2.3.0'],
+    #    rvm1_user: 'ubuntu'
+    #  }
+    #- { role: postgres_db }
+    
